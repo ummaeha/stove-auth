@@ -1,10 +1,9 @@
-require("dotenv").config();
+require("../config/env.js")
 const express = require('express');
 const app = express();
 const cors = require("cors");
 const db = require('../config/db')
 const port = process.env.BACK_PORT || 4000;
-// console.log(process.env)
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()) 
