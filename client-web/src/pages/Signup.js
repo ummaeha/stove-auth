@@ -13,7 +13,6 @@ const Signup = () => {
             password: `${pw}`
         })
         .then(res => res)
-        // .then(data => console.log(data))
         .then(dataObj => 
             {if(dataObj.data.token) localStorage.setItem('token', dataObj.data.token)}
         )//토큰을 Localstorage에 저장하자
