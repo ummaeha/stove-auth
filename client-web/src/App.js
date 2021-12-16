@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import server from "./apis/server"
+import React from 'react';
+import { Router, Switch, Route } from "react-router-dom";
+// import server from "./apis/server"
+import history from "./history";
+import Main from './pages/Main'
+import Signup from './pages/Signup'
+import Login from './pages/Login'
+import './reset.css'
 import './App.css';
 
+function App() {
 
-import React from 'react';
-
-const App = () => {
-
-  // useEffect(() => {
-    server
-    .get(`/`)
-    .then(res => res)
-    .then(data => console.log(data))
+    // useEffect(() => {
+    // server
+    // .get(`/`)
+    // .then(res => res)
+    // .then(data => console.log(data))
 
   // }, [])
-
   return (
-    <div>
-      
+    <div className="App" >
+      <Router history={history}>
+        <div className="main-container">
+          <Switch>
+            <div className="main-body">
+                <Route path="/" exact component={Main} />
+                <Route path="/signup" exact component={Signup} />
+                <Route path="/login" exact component={Login} />
+                {/* <Route path="/posts/:postId" exact component={Post} /> */}
+            </div>
+          </Switch>
+        </div>
+      </Router>
     </div>
   );
 };
