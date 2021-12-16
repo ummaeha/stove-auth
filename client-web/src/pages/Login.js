@@ -4,18 +4,25 @@ import server from '../apis/server'
 const Login = () => {
     console.log('Login');
     const submitLoginInfo = () => {
-        // let email = document.querySelector('.emailInfo').value
-        // let pw = document.querySelector('.passwordInfo').value
+        let email = document.querySelector('.emailInfo').value
+        let pw = document.querySelector('.passwordInfo').value
         // console.log(email, pw)
-        let token = localStorage.getItem('token')
         server
-        .get(`/login`, {
-            headers: {
-                'Authorization': token
-            }
+        .post(`/login`, {
+            email: `${email}`,
+            password: `${pw}`
         })
         .then(res => console.log(res))
-        // .then(data => console.log(data))
+        // get요청을 할 때 필요할때 꺼내다 쓰면됨
+        // let token = localStorage.getItem('token')
+        // server
+        // .get(`/login`, {
+        //     headers: {
+        //         'Authorization': token
+        //     }
+        // })
+        // .then(res => console.log(res))
+
     }
     return (
         <div>

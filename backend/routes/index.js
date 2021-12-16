@@ -73,8 +73,8 @@ app.post('/signup', async (req, res) => {
 app.get('/login', (req, res) => {
     // 클라이언트 요청시 헤더값에 포함된 토큰값 분석
     let auth = req.get('Authorization');
-    const userToken = auth.split('.')[1] //? 왜 짤랐을까
-    console.log(userToken); // payload만 검증하면 되니까
+    // const userToken = auth.split('.')[1] //? 왜 짤랐을까
+    // console.log(userToken); // payload만 검증하면 되니까
 
     //토큰을 통한 회원 인증
     jwt.verify(auth, JWT_SECRET_KEY, (err, encode) => {
@@ -84,4 +84,19 @@ app.get('/login', (req, res) => {
             res.json({ auth: true })
         }
     })
+})
+// 로그인
+app.post('/login', async(req, res) => {
+    console.log(users)
+    const { email, password } = req.body;
+    const user = users.find(usr => usr.email == email);
+    if(!user) {
+        return res.status(400).json('아이디 없음');
+    }
+    else {
+        const isEqualPw = await bcrypt.compare(password, user.password)
+        console.log(isEqualPw);
+        if(isEqualPw) return res.status(200).json({msg: "로그인 성공!"})
+        else return res.status(404).json({msg: "로그인 실패"});
+    }
 })
