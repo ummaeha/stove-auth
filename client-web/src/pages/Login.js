@@ -32,7 +32,7 @@ const Login = () => {
             <br/>
             <input type="text" name="password" class="passwordInfo" />
             <br/>
-            <input type="submit" onClick={e => submitLoginInfo(e)}/>
+            <button type="submit" onClick={e => submitLoginInfo(e)}>로그인</button>
         </div>
     )
 }
