@@ -97,6 +97,6 @@ app.post('/login', async(req, res) => {
         const isEqualPw = await bcrypt.compare(password, user.password)
         console.log(isEqualPw);
         if(isEqualPw) return res.status(200).json({msg: "로그인 성공!"})
-        else return res.status(404).json({msg: "로그인 실패"});
+        else return res.status(404).json({msg: "로그인 실패: 비밀번호를 확인하세요"});
     }
-})
+})    
