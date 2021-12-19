@@ -1,7 +1,9 @@
 import React from 'react'
+import { Link , useHistory} from 'react-router-dom';
 import server from '../apis/server'
 
 const Login = () => {
+    const history = useHistory()
     console.log('Login');
     const submitLoginInfo = () => {
         let email = document.querySelector('.emailInfo').value
@@ -12,16 +14,13 @@ const Login = () => {
             email: `${email}`,
             password: `${pw}`
         })
-        .then(res => console.log(res))
-        // get요청을 할 때 필요할때 꺼내다 쓰면됨
-        // let token = localStorage.getItem('token')
-        // server
-        // .get(`/login`, {
-        //     headers: {
-        //         'Authorization': token
-        //     }
-        // })
-        // .then(res => console.log(res))
+        .then(res => {
+            if(res.data.login) {
+                history.push("/after")
+            }
+            alert(res.data.msg);
+        })
+
 
     }
     return (

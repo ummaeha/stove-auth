@@ -35,11 +35,15 @@ app.listen(port, ()=>{
 // })
 const users =[];
 //users.js
+//회원가입
 app.post('/signup', async (req, res) => {
-    // console.log(req.body);
+    console.log("POST /signup")
+    console.log(req.body);
     const { email, password } = req.body;
-    // console.log(email, password)
+    console.log(req.body);
     const user = users.find(usr => usr.email === email);
+    const sql = 'INSERT INTO users SET ?';
+
     if(!user) {
         const hashed = await bcrypt.hash(password, 10)
 
@@ -51,17 +55,21 @@ app.post('/signup', async (req, res) => {
         
         //저장된 회원정보를 JWT를 통해 Token생성
         const newUserToken = jwt.sign({email}, JWT_SECRET_KEY,{
-            expiresIn: '10m'
+            expiresIn: '60m'
         });
         console.log(newUserToken)
         console.log(users);
 
         //DB에 insert해야지
         //TO DO: password 타입 고민해봐야즤,
+        // db.query(sql, newUser, (err, result) => {
+        //     if(err) throw err;
+        //     else res.send('데이터베이스에 유저 정보를 등록했습니다')
+        // })
 
         //JSON응답을 통해 메시지와 JWT를 통해 생성한 토큰 전달
         return res.status(200).json({
-            msg: "회원가입 성공!",
+            msg: "회원가입에 성공하셨습니다!",
             token: newUserToken
         })
     }
@@ -70,7 +78,9 @@ app.post('/signup', async (req, res) => {
     }
 })
 //회원 인증
-app.get('/login', (req, res) => {
+app.get('/token', (req, res) => {
+    console.log("GET /token")
+
     // 클라이언트 요청시 헤더값에 포함된 토큰값 분석
     let auth = req.get('Authorization');
     // const userToken = auth.split('.')[1] //? 왜 짤랐을까
@@ -87,16 +97,24 @@ app.get('/login', (req, res) => {
 })
 // 로그인
 app.post('/login', async(req, res) => {
+    console.log("POST /login")
+
     console.log(users)
     const { email, password } = req.body;
     const user = users.find(usr => usr.email == email);
     if(!user) {
-        return res.status(400).json('아이디 없음');
+        return res.status(200).json('아이디가 없습니다.');
     }
     else {
         const isEqualPw = await bcrypt.compare(password, user.password)
         console.log(isEqualPw);
-        if(isEqualPw) return res.status(200).json({msg: "로그인 성공!"})
-        else return res.status(404).json({msg: "로그인 실패: 비밀번호를 확인하세요"});
+        if(isEqualPw) return res.status(200).json({
+            msg: "로그인 성공!",
+            login: true
+        })
+        else return res.status(200).json({
+            msg: "로그인 실패: 비밀번호를 확인하세요",
+            login: false
+        });
     }
 })    
