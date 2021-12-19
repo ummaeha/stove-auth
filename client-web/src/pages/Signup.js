@@ -31,11 +31,11 @@ const Signup = () => {
         <div>
             HERE IS Signup PAGE
             <br/>
-            {/* <input type="text" name="name" class="nameInfo"/> */}
+            {/* <input type="text" name="name" className="nameInfo"/> */}
             <br/>
-            <input type="text" name="email" class="emailInfo"/>
+            <input type="text" name="email" className="emailInfo"/>
             <br/>
-            <input type="text" name="password" class="passwordInfo" />
+            <input type="text" name="password" className="passwordInfo" />
             <br/>
             <button type="submit" onClick={e => submitSignupInfo(e)}>회원가입</button>
         </div>

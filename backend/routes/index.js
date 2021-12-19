@@ -42,7 +42,7 @@ app.post('/signup', async (req, res) => {
     const { email, password } = req.body;
     console.log(req.body);
     const user = users.find(usr => usr.email === email);
-    const sql = 'INSERT INTO users SET ?';
+    const sql = 'INSERT INTO authweb.users SET ?';
 
     if(!user) {
         const hashed = await bcrypt.hash(password, 10)
@@ -62,10 +62,10 @@ app.post('/signup', async (req, res) => {
 
         //DB에 insert해야지
         //TO DO: password 타입 고민해봐야즤,
-        // db.query(sql, newUser, (err, result) => {
-        //     if(err) throw err;
-        //     else res.send('데이터베이스에 유저 정보를 등록했습니다')
-        // })
+        db.query(sql, newUser, (err, result) => {
+            if(err) throw err;
+            else res.send('데이터베이스에 유저 정보를 등록했습니다')
+        })
 
         //JSON응답을 통해 메시지와 JWT를 통해 생성한 토큰 전달
         return res.status(200).json({
@@ -118,3 +118,38 @@ app.post('/login', async(req, res) => {
         });
     }
 })    
+
+//회원 리스트
+app.get('/userlist', (req,res) => {
+    console.log(`GET /userlist`)
+    const sql = `SELECT * FROM authweb.users`
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        else res.send(result);
+    })
+})
+
+// // 회원 정보 수정기능 (by, "수정" 버튼)
+// app.put('/userinfo', (req, res) => {
+//     const userId = req.body.id;
+//     // console.log(req.body.id);
+//     console.log(`PATCH /userinfo/${userId}`)
+
+//     const sql = `UPDATE users SET ? WHERE id = ${postId}`
+//     db.query(sql, req.body.newData, (err, result) => {
+//         if(err) throw err;
+//         else res.send(`글을 수정했습니다.`)
+//     })
+// })
+
+// 회원 정보 삭제기능 (by, "삭제" 버튼)
+app.delete('/user/:id', (req, res) => {
+    const userId = req.params.id;
+    console.log(`DELETE /user/${userId}`);
+
+    const sql = `DELETE FROM authweb.users WHERE id = ${userId}`
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        else res.send('유저가 삭제되었습니다.')
+    })
+})

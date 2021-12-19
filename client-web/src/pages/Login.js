@@ -18,7 +18,7 @@ const Login = () => {
             if(res.data.login) {
                 history.push("/after")
             }
-            alert(res.data.msg);
+            alert(res.data);
         })
 
 
@@ -27,9 +27,9 @@ const Login = () => {
         <div>
             HERE IS login PAGE
             <br/>
-            <input type="text" name="email" class="emailInfo"/>
+            <input type="text" name="email" className="emailInfo"/>
             <br/>
-            <input type="text" name="password" class="passwordInfo" />
+            <input type="text" name="password" className="passwordInfo" />
             <br/>
             <button type="submit" onClick={e => submitLoginInfo(e)}>로그인</button>
         </div>
