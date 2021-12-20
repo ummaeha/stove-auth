@@ -34,6 +34,25 @@ app.listen(port, ()=>{
 //     })
 // })
 const users =[];
+const selectQuery =(selectSql, email) => {
+    return new Promise((resolve, reject) => {
+        db.query(selectSql, (err, result) => {
+            if(err) console.log(err);
+            else {
+                let userlist = result;
+                console.log('userlist: ', userlist);
+                let user = userlist.find(usr =>{ 
+                    console.log('기존 유저: ',usr.email, usr.email === email);
+                    return usr.email === email
+                });
+                console.log('user: ',user);
+                resolve (user)
+            }
+        })
+    }
+    )
+
+}
 //users.js
 //회원가입
 app.post('/signup', async (req, res) => {
@@ -41,7 +60,17 @@ app.post('/signup', async (req, res) => {
     console.log(req.body);
     const { email, password } = req.body;
     console.log(req.body);
-    const user = users.find(usr => usr.email === email);
+    //users배열이 아닌 db로 연결하기
+    let userlist;
+    let user;
+    const selectSql = `SELECT * FROM authweb.users`
+    user = await selectQuery(selectSql, email)
+    
+    await console.log(user);
+    // const user = userlist.find(usr =>{ 
+    //     console.log('기존 유저: ',usr);
+    //     usr.email === email
+    // });
     const sql = 'INSERT INTO authweb.users SET ?';
 
     if(!user) {
@@ -51,20 +80,20 @@ app.post('/signup', async (req, res) => {
             email, password:hashed // email에는 email값이 바로 들어가니까 value를 생략, password는 hashed된 값을 저장(TO DO: 사실은 password보다 token이 맞지 않을까?)
         }
 
-        users.push(newUser);
+        // users.push(newUser);
         
         //저장된 회원정보를 JWT를 통해 Token생성
         const newUserToken = jwt.sign({email}, JWT_SECRET_KEY,{
             expiresIn: '60m'
         });
         console.log(newUserToken)
-        console.log(users);
+        // console.log(users);
 
         //DB에 insert해야지
         //TO DO: password 타입 고민해봐야즤,
         db.query(sql, newUser, (err, result) => {
             if(err) throw err;
-            else res.send('데이터베이스에 유저 정보를 등록했습니다')
+            // else res.send('데이터베이스에 유저 정보를 등록했습니다')
         })
 
         //JSON응답을 통해 메시지와 JWT를 통해 생성한 토큰 전달
@@ -74,7 +103,7 @@ app.post('/signup', async (req, res) => {
         })
     }
     else { //이미 가입된 email일 때,
-        return res.status(400).json({msg: '이미 같은 이메일이 존재합니다.'})
+        return res.status(400).json({msg: '이미 같은 이메일이 존재합니다. 로그인 페이지로 이동합니다'})
     }
 })
 //회원 인증
@@ -85,13 +114,13 @@ app.get('/token', (req, res) => {
     let auth = req.get('Authorization');
     // const userToken = auth.split('.')[1] //? 왜 짤랐을까
     // console.log(userToken); // payload만 검증하면 되니까
-
+    console.log('auth: ', auth);
     //토큰을 통한 회원 인증
     jwt.verify(auth, JWT_SECRET_KEY, (err, encode) => {
         if(err) console.log(err);
         else {
             console.log(encode)
-            res.json({ auth: true })
+            res.status(200).json({ auth: true })
         }
     })
 })
@@ -101,7 +130,12 @@ app.post('/login', async(req, res) => {
 
     console.log(users)
     const { email, password } = req.body;
-    const user = users.find(usr => usr.email == email);
+    // const user = users.find(usr => usr.email == email);
+    let user;
+    const selectSql = `SELECT * FROM authweb.users`
+    user = await selectQuery(selectSql, email)
+    
+    await console.log(user);
     if(!user) {
         return res.status(200).json('아이디가 없습니다.');
     }

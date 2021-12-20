@@ -8,6 +8,7 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import Afterlogin from './pages/Afterlogin'
 import Manage from './pages/Manage';
+import IsLogin from './utils/IsLogin';
 import './reset.css'
 import './App.css';
 
@@ -31,7 +32,7 @@ function App() {
                 <Route path="/login" exact component={Login} />
                 <Route path="/after" exact component={Afterlogin} />
                 <Route path="/manage" exact component={Manage} />
-
+                <Route path="/islogin" exact component={IsLogin} />
                 {/* <Route path="/posts/:postId" exact component={Post} /> */}
             </div>
           </Switch>

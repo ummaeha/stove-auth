@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import isLogin from '../utils/isLogin'
+import IsLogin from '../utils/IsLogin'
 
 const Afterlogin = () => {
-    let result = isLogin()
-    console.log(result)
+    // let result = IsLogin()
+    // console.log(result)
     return (
         <div>
             Afterlogin 페이지 입니다.

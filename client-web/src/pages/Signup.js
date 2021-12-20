@@ -4,7 +4,7 @@ import server from '../apis/server'
 
 const Signup = () => {
     const history = useHistory()
-    console.log('Login');
+    console.log('Signup');
     const submitSignupInfo = () => {
         // let name = document.querySelector('.nameInfo').value
         let email = document.querySelector('.emailInfo').value
@@ -20,12 +20,18 @@ const Signup = () => {
         .then(dataObj => {
             if(dataObj.data) {
                 localStorage.setItem('token', dataObj.data.token)
+                console.log(dataObj.data);
                 alert(dataObj.data.msg)
                 history.push("/after")
             }
           }
         )//토큰을 Localstorage에 저장하자
-        
+        .catch((err) => {
+            if(err.response.status === 400) {
+                alert(err.response.data.msg)
+                history.push("/login")
+            }
+        })
     }
     return (
         <div>

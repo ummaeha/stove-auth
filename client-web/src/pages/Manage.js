@@ -52,7 +52,7 @@ const Manage = () => {
                     <span>{`${eachUser.email}`}</span>
                     <span>{eachUser.role && ` ( ${eachUser.role} ) `}</span>
                     {/* <button onClick={(e) => {editUserInfo(e, `${i+1}`)}}>수정</button> */}
-                    <button onClick={(e) => {deleteUser(e, `${i+1}`)}}>삭제</button>
+                    <button onClick={(e) => {deleteUser(e, `${eachUser.id}`)}}>삭제</button>
                 </div>
                 if(eachUser.role == 'admin') {
                     //현 유저가 admin유저일 경우
