@@ -34,7 +34,25 @@ app.listen(port, ()=>{
 //     })
 // })
 const users =[];
-const selectQuery =(selectSql, email) => {
+//
+const checkAuthority = (email) => {
+    const sql = `SELECT ROLE FROM authweb.users where email='${email}'`
+
+    return new Promise((resolve, reject) => {
+        db.query(sql, (err, result) => {
+            if(err) console.log(err);
+            else {
+                let authority = result;
+                console.log(authority);
+                if(authority.role) resolve(1) // not null
+                else resolve(0)
+            }
+        })
+    })
+}
+
+
+const selectQuery = (selectSql, email) => {
     return new Promise((resolve, reject) => {
         db.query(selectSql, (err, result) => {
             if(err) console.log(err);
@@ -52,6 +70,26 @@ const selectQuery =(selectSql, email) => {
     }
     )
 
+}
+//로그인 할 때도, 해당 유저 토큰을 localstorage에 넣어주어야하니까, 토큰 부분을 함수로 분리하자.
+const sendToken = (email, sql, newUser) => {
+    //저장된 회원정보를 JWT를 통해 Token생성
+    const newUserToken = jwt.sign({email}, JWT_SECRET_KEY,{
+        expiresIn: '60m'
+    });
+    console.log('newUserToken',newUserToken)
+    // console.log(users);
+
+    //DB에 insert해야지
+    //TO DO: password 타입 고민해봐야즤,
+    console.log('newUser',newUser);
+    newUser&&
+    db.query(sql, newUser, (err, result) => {
+        if(err) throw err;
+        // else res.send('데이터베이스에 유저 정보를 등록했습니다')
+    })
+
+    return newUserToken
 }
 //users.js
 //회원가입
@@ -82,20 +120,8 @@ app.post('/signup', async (req, res) => {
 
         // users.push(newUser);
         
-        //저장된 회원정보를 JWT를 통해 Token생성
-        const newUserToken = jwt.sign({email}, JWT_SECRET_KEY,{
-            expiresIn: '60m'
-        });
-        console.log(newUserToken)
-        // console.log(users);
-
-        //DB에 insert해야지
-        //TO DO: password 타입 고민해봐야즤,
-        db.query(sql, newUser, (err, result) => {
-            if(err) throw err;
-            // else res.send('데이터베이스에 유저 정보를 등록했습니다')
-        })
-
+       //sendToken
+        const newUserToken = sendToken(email, sql, newUser)
         //JSON응답을 통해 메시지와 JWT를 통해 생성한 토큰 전달
         return res.status(200).json({
             msg: "회원가입에 성공하셨습니다!",
@@ -116,11 +142,12 @@ app.get('/token', (req, res) => {
     // console.log(userToken); // payload만 검증하면 되니까
     console.log('auth: ', auth);
     //토큰을 통한 회원 인증
-    jwt.verify(auth, JWT_SECRET_KEY, (err, encode) => {
-        if(err) console.log(err);
+    jwt.verify(auth, JWT_SECRET_KEY, async (err, encode) => {
+        if(err) res.send(err);
         else {
             console.log(encode)
-            res.status(200).json({ auth: true })
+            const authority = await checkAuthority(encode.email)
+            res.status(200).json({ auth: true, email: encode.email, user: authority })
         }
     })
 })
@@ -140,11 +167,14 @@ app.post('/login', async(req, res) => {
         return res.status(200).json('아이디가 없습니다.');
     }
     else {
+        let newToken = sendToken(email)
+        console.log('newToken',newToken);
         const isEqualPw = await bcrypt.compare(password, user.password)
         console.log(isEqualPw);
         if(isEqualPw) return res.status(200).json({
             msg: "로그인 성공!",
-            login: true
+            login: true,
+            token: newToken
         })
         else return res.status(200).json({
             msg: "로그인 실패: 비밀번호를 확인하세요",

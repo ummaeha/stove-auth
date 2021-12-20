@@ -16,9 +16,10 @@ const Login = () => {
         })
         .then(res => {
             if(res.data.login) {
+                localStorage.setItem('token', res.data.token)
                 history.push("/after")
             }
-            alert(res.data);
+            // alert(res);
         })
 
 
