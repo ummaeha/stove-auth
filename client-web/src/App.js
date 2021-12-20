@@ -1,7 +1,10 @@
 import React from 'react';
 import { Router, Switch, Route } from "react-router-dom";
 // import server from "./apis/server"
+<<<<<<< HEAD
 import PrivateRoute from './PrivateRoute';
+=======
+>>>>>>> 913f11d2361267d37dea6f33962d02348e52f147
 import history from "./history";
 import Main from './pages/Main'
 import Signup from './pages/Signup'
