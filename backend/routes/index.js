@@ -43,8 +43,8 @@ const checkAuthority = (email) => {
             if(err) console.log(err);
             else {
                 let authority = result;
-                console.log(authority);
-                if(authority.role) resolve(1) // not null
+                console.log(authority[0].ROLE);
+                if(authority[0].ROLE == 'admin') resolve(1) // not null
                 else resolve(0)
             }
         })

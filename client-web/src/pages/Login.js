@@ -33,6 +33,10 @@ const Login = () => {
             <input type="text" name="password" className="passwordInfo" />
             <br/>
             <button type="submit" onClick={e => submitLoginInfo(e)}>로그인</button>
+            <br/>
+            계정이 없으시다면?
+            <br/>
+            <Link to={'/signup'} className="">회원가입</Link>
         </div>
     )
 }

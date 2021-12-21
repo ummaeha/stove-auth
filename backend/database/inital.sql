@@ -11,3 +11,4 @@ CREATE TABLE users (
 ) DEFAULT CHARSET=utf8, ENGINE=InnoDB;
 
 INSERT INTO authweb.users (email, password, role) VALUES ('raya000@naver.com', '1234', 'admin');
+-- update authweb.users set role='admin' where id=50;
